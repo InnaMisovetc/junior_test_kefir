@@ -1,10 +1,10 @@
+from django.contrib import auth
+from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.contrib import auth
-from django.http import JsonResponse
 
 from user_session.serializers import LoginSerializer
 from users.serializers import UserSerializer
@@ -37,3 +37,9 @@ class LoginView(APIView):
                 return JsonResponse(user_serializer.data, status=status.HTTP_200_OK)
             else:
                 return JsonResponse({'code': 400, 'message': 'Invalid login or password'})
+
+
+class LogoutView(APIView):
+    def post(self, request):
+        auth.logout(request)
+        return Response(status=status.HTTP_200_OK)
