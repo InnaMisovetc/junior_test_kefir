@@ -3,6 +3,10 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 
 
+class CityModel(models.Model):
+    name = models.CharField(max_length=150)
+
+
 class CustomUserManager(BaseUserManager):
     """
     Custom user model manager where email is the unique identifier
@@ -43,6 +47,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     other_name = models.CharField(verbose_name='Other Name', max_length=150)
     phone = models.CharField(max_length=20)
     birthday = models.DateField(null=True)
+    city = models.ForeignKey(CityModel, on_delete=models.SET_NULL, null=True)
     additional_info = models.TextField(null=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
