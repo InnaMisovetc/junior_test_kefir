@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     'users',
     'user_session',
+    'users_administration',
 ]
 
 MIDDLEWARE = [
