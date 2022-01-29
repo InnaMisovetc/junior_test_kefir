@@ -1,4 +1,5 @@
-from rest_framework import generics
+from django.http import JsonResponse
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -20,3 +21,15 @@ class UsersListView(generics.ListAPIView):
     def get_serializer(self, *args, **kwargs):
         serializer = UserSerializer(self.get_queryset(), fields=('id', 'first_name', 'last_name', 'email'), many=True)
         return serializer
+
+
+class UserUpdateView(APIView):
+    def patch(self, request, pk):
+        user = request.user
+        if user.id == pk:
+            serializer = UserSerializer(user, data=request.data, exclude=('id', 'is_admin'), partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(data=serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
