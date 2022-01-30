@@ -3,27 +3,43 @@ from rest_framework import serializers
 from .models import CustomUser
 
 
-class DynamicFieldsModelSerializer(serializers.ModelSerializer):
+class BasicUserSerializer(serializers.ModelSerializer):
+
     def __init__(self, *args, **kwargs):
-        fields = kwargs.pop('fields', None)
-        exclude = kwargs.pop('exclude', None)
 
-        super(DynamicFieldsModelSerializer, self).__init__(*args, **kwargs)
+        include_id = kwargs.pop('include_id', False)
+        include_admin = kwargs.pop('include_admin', False)
 
-        if fields is not None:
-            allowed = set(fields)
-            existing = set(self.fields.keys())
-            for field_name in existing - allowed:
-                self.fields.pop(field_name)
+        super().__init__(*args, **kwargs)
 
-        if exclude is not None:
-            not_allowed = set(exclude)
-            for exclude_name in not_allowed:
-                self.fields.pop(exclude_name)
+        if 'id' in self.fields and not include_id:
+            self.fields.pop('id')
+        if 'is_admin' in self.fields and not include_admin:
+            self.fields.pop('is_admin')
+
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'first_name', 'last_name', 'email')
 
 
-class UserSerializer(DynamicFieldsModelSerializer):
+class DetailedUserSerializer(BasicUserSerializer):
     class Meta:
         model = CustomUser
         fields = ('id', 'first_name', 'last_name', 'other_name', 'email', 'phone', 'birthday', 'is_admin')
+        extra_kwargs = {'id': {'read_only': True}}
+
+
+class PrivateUserSerializer(BasicUserSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'first_name', 'last_name', 'other_name', 'email', 'phone', 'birthday', 'city', 'additional_info', 'is_admin', 'password')
         extra_kwargs = {'password': {'write_only': True}, 'id': {'read_only': True}}
+
+
+class UpdatePrivateUserSerializer(BasicUserSerializer):
+    id = serializers.IntegerField(required=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'first_name', 'last_name', 'other_name', 'email', 'phone', 'birthday', 'city', 'additional_info', 'is_admin', 'password')
+        extra_kwargs = {'password': {'write_only': True}}

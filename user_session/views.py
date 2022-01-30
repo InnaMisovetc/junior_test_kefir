@@ -23,7 +23,7 @@ class LoginView(APIView):
 
             if user is not None:
                 auth.login(request, user)
-                user_serializer = UserSerializer(user, exclude=('id',))
+                user_serializer = DetailedUserSerializer(user, include_admin=True)
                 return JsonResponse(user_serializer.data, status=status.HTTP_200_OK)
             else:
                 return JsonResponse({'code': 400, 'message': 'Invalid login or password'})

@@ -5,12 +5,12 @@ from rest_framework.views import APIView
 
 from users.models import CustomUser
 from users.pagination import CustomPagination
-from users.serializers import UserSerializer
+from users.serializers import BasicUserSerializer, DetailedUserSerializer
 
 
 class CurrentUserView(APIView):
     def get(self, request):
-        serializer = UserSerializer(request.user, exclude=('id',))
+        serializer = DetailedUserSerializer(request.user, include_admin=True)
         return Response(serializer.data)
 
 
@@ -19,7 +19,7 @@ class UsersListView(generics.ListAPIView):
     pagination_class = CustomPagination
 
     def get_serializer(self, *args, **kwargs):
-        serializer = UserSerializer(self.get_queryset(), fields=('id', 'first_name', 'last_name', 'email'), many=True)
+        serializer = BasicUserSerializer(self.get_queryset(), include_id=True, many=True)
         return serializer
 
 
@@ -27,8 +27,8 @@ class UserUpdateView(APIView):
     def patch(self, request, pk):
         user = request.user
         if user.id == pk:
-            serializer = UserSerializer(user, data=request.data, exclude=('id', 'is_admin'), partial=True)
-            if serializer.is_valid():
+            serializer = DetailedUserSerializer(user, data=request.data, include_id=True, partial=True)
+            if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return JsonResponse(data=serializer.data, status=status.HTTP_200_OK)
         else:
