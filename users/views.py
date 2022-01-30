@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,6 +26,8 @@ class UsersListView(generics.ListAPIView):
 
 class UserUpdateView(APIView):
     def patch(self, request, pk):
+        get_object_or_404(CustomUser, pk=pk)
+
         user = request.user
         if user.id == pk:
             serializer = DetailedUserSerializer(user, data=request.data, include_id=True, partial=True)
