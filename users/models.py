@@ -41,12 +41,12 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(unique=True, blank=False, null=False)
     first_name = models.CharField(verbose_name='First Name', max_length=150, blank=False, null=False)
     last_name = models.CharField(verbose_name='Last Name', max_length=150, blank=False, null=False)
-    other_name = models.CharField(verbose_name='Other Name', max_length=150)
-    phone = models.CharField(max_length=20)
-    birthday = models.DateField(null=True)
+    other_name = models.CharField(verbose_name='Other Name', max_length=150, blank=True, null=True)
+    email = models.EmailField(unique=True, blank=False, null=False)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    birthday = models.DateField(blank=True, null=True)
     city = models.ForeignKey(CityModel, on_delete=models.SET_NULL, null=True)
     additional_info = models.TextField(null=True)
     is_admin = models.BooleanField(default=False)
