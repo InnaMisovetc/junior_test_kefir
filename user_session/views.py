@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rest_framework.exceptions import ParseError
 from user_session.serializers import LoginSerializer
 from users.serializers import DetailedUserSerializer
 
@@ -26,7 +26,7 @@ class LoginView(APIView):
                 user_serializer = DetailedUserSerializer(user, include_admin=True)
                 return JsonResponse(user_serializer.data, status=status.HTTP_200_OK)
             else:
-                return JsonResponse({'code': 400, 'message': 'Invalid login or password'})
+                raise ParseError('Login or password is invalid')
 
 
 class LogoutView(APIView):

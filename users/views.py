@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
+from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -35,4 +36,4 @@ class UserUpdateView(APIView):
                 serializer.save()
                 return JsonResponse(data=serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            raise ParseError('You cannot change other users data')
