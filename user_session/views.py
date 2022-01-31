@@ -23,7 +23,7 @@ class LoginView(APIView):
 
             if user is not None:
                 auth.login(request, user)
-                user_serializer = DetailedUserSerializer(user, include_admin=True)
+                user_serializer = LoginUserSerializer(user)
                 return JsonResponse(user_serializer.data, status=status.HTTP_200_OK)
             else:
                 raise ParseError('Login or password is invalid')

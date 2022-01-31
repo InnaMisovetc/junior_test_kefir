@@ -3,7 +3,7 @@ from rest_framework import serializers
 from users.models import CustomUser
 
 
-class HintSerializer(serializers.Serializer):
+class CitySerializer(serializers.Serializer):
     id = serializers.IntegerField(source='city.id')
     name = serializers.CharField(source='city.name')
 

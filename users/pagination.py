@@ -3,14 +3,14 @@ from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.pagination import PageNumberPagination, _positive_int
 from rest_framework.response import Response
 
+from utils.serializers import MetaSerializer, PaginatedResponceSerializer
+
 
 class CustomPagination(PageNumberPagination):
     page_size_query_param = 'size'
 
     def get_paginated_response(self, data):
-        return Response({"data": data,
-                         "meta": self._get_meta()
-                         })
+        return Response(PaginatedResponceSerializer(data={"data": data, "meta": self._get_meta()}).to_json())
 
     def paginate_queryset(self, queryset, request, view=None):
         errors = {}
@@ -20,34 +20,14 @@ class CustomPagination(PageNumberPagination):
         if len(errors) > 0:
             raise ValidationError(errors)
 
-        page_size = self.get_page_size(request)
-
-        if not page_size:
-            return None
-
-        paginator = self.django_paginator_class(queryset, page_size)
-        page_number = self.get_page_number(request, paginator)
-
-        try:
-            self.page = paginator.page(page_number)
-        except InvalidPage as exc:
-            msg = self.invalid_page_message.format(
-                page_number=page_number, message=str(exc)
-            )
-            raise NotFound(msg)
-
-        if paginator.num_pages > 1 and self.template is not None:
-            self.display_page_controls = True
-
-        self.request = request
-        return list(self.page)
+        return super(CustomPagination, self).paginate_queryset(queryset, request, view)
 
     def _get_meta(self):
-        return {"pagination": {
+        return MetaSerializer(data={"pagination": {
             "total": self.page.paginator.count,
             "page": self.page.number,
             "size": len(self.page)},
-        }
+        }).to_json()
 
     def _validate_query_parameter(self, request, parameter, errors):
         try:

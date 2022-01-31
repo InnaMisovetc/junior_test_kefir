@@ -1,6 +1,8 @@
 from rest_framework import exceptions, status
 from rest_framework.views import exception_handler
 
+from utils.serializers import BadRequestSerializer, ValidationErrorSerializer
+
 
 def custom_exception_handler(exc, context):
     handlers = {
@@ -17,32 +19,30 @@ def custom_exception_handler(exc, context):
         response.status_code = status.HTTP_401_UNAUTHORIZED
         response.data = 'Authentication credentials were not provided.'
 
-    if 'UsersListView' in str(context['view']) or 'PrivateUsersListCreateView' in str(
-            context['view']) and exc.status_code == 404:
+    if 'UsersListView' in str(context['view']) or 'PrivateUsersListCreateView' in str(context['view']) and exc.status_code == 404:
         response.status_code = 400
-        response.data = {'code': response.status_code,
-                         'message': exc.detail}
+        response.data = BadRequestSerializer(data={'code': response.status_code, 'message': exc.detail}).to_json()
+
     if exception_class in handlers:
         return handlers[exception_class](exc, context, response)
     return response
 
 
 def _handle_bad_request_error(exc, context, response):
-    response.data = {
-        'code': response.status_code,
-        'message': exc.detail}
+    response.data = BadRequestSerializer(data={'code': response.status_code, 'message': exc.detail}).to_json()
     return response
 
 
 def _handle_validation_error(exc, context, response):
     response.status_code = 422
-    response.data = {'detail': []}
+    detail = {'detail': []}
     for loc, detail in exc.get_full_details().items():
-        response.data['detail'].append({
+        detail.append({
             "loc": [loc],
             "msg": detail[0]['message'],
             "type": detail[0]['code']
         })
+    response.data = ValidationErrorSerializer(data=detail).to_json()
     return response
 
 
