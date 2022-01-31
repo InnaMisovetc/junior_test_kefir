@@ -47,4 +47,4 @@ class LogoutView(APIView):
             401: OpenApiResponse(response=OpenApiTypes.STR, description=responses[401])})
     def get(self, request):
         auth.logout(request)
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK, data='User logged out')
