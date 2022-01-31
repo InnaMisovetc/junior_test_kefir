@@ -1,5 +1,4 @@
-from django.core.paginator import InvalidPage
-from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination, _positive_int
 from rest_framework.response import Response
 
