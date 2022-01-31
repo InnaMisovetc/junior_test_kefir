@@ -28,23 +28,19 @@ https://hub.docker.com/repository/docker/innamisovets/kefir-test
 2. Определите переменные окружения с помощью .env.dist
 3. Загрузите статические файлы на ваш AWS S3 бакет:
    
-
-    python manage.py collectstatic
+        python manage.py collectstatic
 
 4. Примените миграции:
    
-    
-    python manage.py migrate
+        python manage.py migrate
 
 5. Создайте суперпользователя:
-
-    
-    python manage.py createsuperuser
+        
+        python manage.py createsuperuser
 
 6. Запустите проект локально:
-
    
-    python manage.py runserver
+        python manage.py runserver
 
 7. Проект доступен по адресу: http://127.0.0.1:8000
 
