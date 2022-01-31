@@ -35,14 +35,14 @@ def _handle_bad_request_error(exc, context, response):
 
 def _handle_validation_error(exc, context, response):
     response.status_code = 422
-    detail = {'detail': []}
+    data = {'detail': []}
     for loc, detail in exc.get_full_details().items():
-        detail.append({
+        data['detail'].append({
             "loc": [loc],
             "msg": detail[0]['message'],
             "type": detail[0]['code']
         })
-    response.data = ValidationErrorSerializer(data=detail).to_json()
+    response.data = ValidationErrorSerializer(data=data).to_json()
     return response
 
 
