@@ -1,5 +1,10 @@
+from http.client import responses
+
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import generics
 from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
@@ -11,6 +16,23 @@ from utils.serializers import BadRequestSerializer, ValidationErrorSerializer, P
 from .permissions import AdministrationPermission
 
 
+@method_decorator(name='get',
+                  decorator=extend_schema(
+                      responses={
+                          200: OpenApiResponse(response=PrivatePaginatedResponceSerializer, description=responses[200]),
+                          400: OpenApiResponse(response=BadRequestSerializer, description=responses[400]),
+                          401: OpenApiResponse(response=OpenApiTypes.STR, description=responses[401]),
+                          403: OpenApiResponse(response=OpenApiTypes.STR, description=responses[403]),
+                          422: OpenApiResponse(response=ValidationErrorSerializer, description=responses[422])}))
+@method_decorator(name='post',
+                  decorator=extend_schema(
+                      request=CreateUserSerializer,
+                      responses={
+                          201: OpenApiResponse(response=CreateUserSerializer, description=responses[201]),
+                          400: OpenApiResponse(response=BadRequestSerializer, description=responses[400]),
+                          401: OpenApiResponse(response=OpenApiTypes.STR, description=responses[401]),
+                          403: OpenApiResponse(response=OpenApiTypes.STR, description=responses[403]),
+                          422: OpenApiResponse(response=ValidationErrorSerializer, description=responses[422])}))
 class PrivateUsersListCreateView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated, AdministrationPermission)
     queryset = CustomUser.objects.all()
@@ -24,6 +46,32 @@ class PrivateUsersListCreateView(generics.ListCreateAPIView):
         return serializer
 
 
+@method_decorator(name='get',
+                  decorator=extend_schema(
+                      responses={
+                          200: OpenApiResponse(response=CreateUserSerializer, description=responses[200]),
+                          400: OpenApiResponse(response=BadRequestSerializer, description=responses[400]),
+                          401: OpenApiResponse(response=OpenApiTypes.STR, description=responses[401]),
+                          403: OpenApiResponse(response=OpenApiTypes.STR, description=responses[403]),
+                          422: OpenApiResponse(response=ValidationErrorSerializer, description=responses[422])}))
+@method_decorator(name='patch',
+                  decorator=extend_schema(
+                      request=PrivatePatchUserSerializer,
+                      responses={
+                          201: OpenApiResponse(response=PrivatePatchUserSerializer, description=responses[201]),
+                          400: OpenApiResponse(response=BadRequestSerializer, description=responses[400]),
+                          401: OpenApiResponse(response=OpenApiTypes.STR, description=responses[401]),
+                          403: OpenApiResponse(response=OpenApiTypes.STR, description=responses[403]),
+                          404: OpenApiResponse(response=OpenApiTypes.STR, description=responses[404]),
+                          422: OpenApiResponse(response=ValidationErrorSerializer, description=responses[422])}))
+@method_decorator(name='delete',
+                  decorator=extend_schema(
+                      request=PrivatePatchUserSerializer,
+                      responses={
+                          204: OpenApiResponse(description=responses[204]),
+                          401: OpenApiResponse(response=OpenApiTypes.STR, description=responses[401]),
+                          403: OpenApiResponse(response=OpenApiTypes.STR, description=responses[403]),
+                          422: OpenApiResponse(response=ValidationErrorSerializer, description=responses[422])}))
 class PrivateUserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, AdministrationPermission)
     queryset = CustomUser.objects.all()
