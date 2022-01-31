@@ -16,7 +16,7 @@ https://peaceful-wave-33670.herokuapp.com/api/schema/swagger-ui/
 
 Для сборки контейнера выполните команду:
 
-    docker build -t [container_name]:v1 .
+    docker build -t [container_name]:[version] .
 
 Docker-контейнер проекта загружен в Docker Hub и доступен по ссылке:
 https://hub.docker.com/repository/docker/innamisovets/kefir-test
