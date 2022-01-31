@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'drf_spectacular',
 
     'users',
     'user_session',
@@ -139,5 +140,13 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
     ],
-    'EXCEPTION_HANDLER': 'utils.exception_handler.custom_exception_handler'
+    'EXCEPTION_HANDLER': 'utils.exception_handler.custom_exception_handler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Kefir Test API',
+    'VERSION': '1.0.0'
+}
+
+
