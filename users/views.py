@@ -36,7 +36,7 @@ class CurrentUserView(APIView):
             401: OpenApiResponse(response=OpenApiTypes.STR, description=responses[401]),
             422: OpenApiResponse(response=ValidationErrorSerializer, description=responses[422])}))
 class UsersListView(generics.ListAPIView):
-    queryset = CustomUser.objects.all()
+    queryset = CustomUser.objects.all().order_by('id')
     pagination_class = CustomPagination
 
     def get_serializer(self, *args, **kwargs):

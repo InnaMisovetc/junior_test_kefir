@@ -35,7 +35,7 @@ from .permissions import AdministrationPermission
                           422: OpenApiResponse(response=ValidationErrorSerializer, description=responses[422])}))
 class PrivateUsersListCreateView(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated, AdministrationPermission)
-    queryset = CustomUser.objects.all()
+    queryset = CustomUser.objects.all().order_by('id')
     pagination_class = AdminCustomPagination
 
     def get_serializer(self, *args, **kwargs):
